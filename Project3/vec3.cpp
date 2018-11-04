@@ -56,6 +56,7 @@ vec3 &vec3::operator+=(const vec3 &other) {
   return *this;
 }
 
+
 vec3 &vec3::operator-=(const vec3 &other) {
   v[0] -= other.v[0];
   v[1] -= other.v[1];

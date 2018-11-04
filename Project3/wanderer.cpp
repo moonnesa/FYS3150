@@ -13,12 +13,14 @@ wanderer::wanderer(){
 }
 
 wanderer::wanderer(vec3 position, vec3 velocity, const double M, string N) {
-    x = position[0];
-    y = position[1];
-    z = position[2];
-    vx = velocity[0];
-    vy = velocity[1];
-    vz = velocity[2];
+    p = position;
+    v = velocity;
+    x = p[0];
+    y = p[1];
+    z = p[2];
+    vx = v[0];
+    vy = v[1];
+    vz = v[2];
     mass = M;
     name = N;
 }
@@ -27,29 +29,45 @@ string wanderer::getName(){
     return name;
 }
 
-double wanderer::distance(wanderer otherwanderer) {
-    x = x - otherwanderer.x;
-    y = y - otherwanderer.y;
-    z = z - otherwanderer.z;
-    return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+vec3 wanderer::getPosition(){
+    return p;
+}
+vec3 wanderer::getVelocity(){
+    return v;
 }
 
-vec3 wanderer::GForce(wanderer otherwanderer) {
+double wanderer::distance(wanderer otherwanderer) {
+    p[0] = p[0]-otherwanderer.p[0];;
+    p[1] = p[1]-otherwanderer.p[1];;
+    p[2] = p[2]-otherwanderer.p[2];;
+    return sqrt(pow(p[0], 2) + pow(p[1], 2) + pow(p[2], 2));
+}
+
+vec3 wanderer::resetForces(){
+    Fg = vec3(0,0,0);
+    return Fg;
+
+}
+
+vec3 wanderer::computeGForce(wanderer otherwanderer) {
     double M1, M2, r;
     M1 = mass;
     M2 = otherwanderer.mass;
     r = distance(otherwanderer);
-    Fg[0] = -G * (M2 * M1 / pow(r, 3)) * x;
-    Fg[1] = -G * (M2 * M1 / pow(r, 3)) * y;
-    Fg[2] = -G * (M2 * M1 / pow(r, 3)) * z;
+    Fg[0] = -G * (M2 * M1 / pow(r, 3)) * p[0]-otherwanderer.p[0];
+    Fg[1] = -G * (M2 * M1 / pow(r, 3)) * p[1]-otherwanderer.p[1];
+    Fg[2] = -G * (M2 * M1 / pow(r, 3)) * p[2]-otherwanderer.p[2];
+    //cout << p[0] <<" "<<y<<" "<<z<< endl;
     return Fg;
 }
 
 vec3 wanderer::acceleration(wanderer otherwanderer) {
     vec3 acceleration;
-    double r = distance(otherwanderer);
-    acceleration[0] = -G * x / pow(r, 3);
-    acceleration[1] = -G * y / pow(r, 3);
-    acceleration[2] = -G * z / pow(r, 3);
+    double M1 = mass;
+    double M2 = otherwanderer.mass;
+    acceleration[0] = this->computeGForce(otherwanderer)[0]/(M2*M1);
+    acceleration[1] = this->computeGForce(otherwanderer)[1]/(M2*M1);
+    acceleration[2] = this->computeGForce(otherwanderer)[2]/(M2*M1);
+    //cout << acceleration << endl;
     return acceleration;
 }

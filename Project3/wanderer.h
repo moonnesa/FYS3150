@@ -16,8 +16,8 @@ private:
 
 public:
   double mass;
-  vec3 position;
-  vec3 velocity;
+  vec3 p;
+  vec3 v;
   double x, y, z;
   double vx, vy, vz;
   double ax, ay, az;
@@ -28,9 +28,12 @@ public:
   wanderer();
   wanderer(vec3 position, vec3 velocity, const double M, string w_name);
   string getName();
+  vec3 getPosition();
+  vec3 getVelocity();
   double distance(wanderer otherwanderer);
-  vec3 GForce(wanderer otherwanderer);
-  vec3 accel(wanderer otherwanderer);
+  vec3 resetForces();
+  vec3 computeGForce(wanderer otherwanderer);
+  vec3 acceleration(wanderer otherwanderer);
   // double kinetic();
   // double potential(planet otherplanet);
 };
